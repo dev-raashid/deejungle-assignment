@@ -23,7 +23,7 @@ export default function FetchButton({ isLoading, onPress }: FetchButtonProps) {
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    backgroundColor: "#1d4ed8",
+    backgroundColor: "#1f6f78",
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 14,

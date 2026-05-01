@@ -39,18 +39,19 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     alignItems: "center",
-    borderColor: "#d1d5db",
+    borderColor: "#d8c9b6",
     borderRadius: 16,
     borderWidth: 1,
+    backgroundColor: "#fbf7f0",
     padding: 24,
   },
   emptyTitle: {
-    color: "#6b7280",
+    color: "#7b6a58",
     fontSize: 15,
   },
   card: {
-    backgroundColor: "#ffffff",
-    borderColor: "#e5e7eb",
+    backgroundColor: "#fff9f1",
+    borderColor: "#e5d6c3",
     borderRadius: 16,
     borderWidth: 1,
     padding: 16,
