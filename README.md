@@ -84,10 +84,13 @@ yarn lint
 app/
   _layout.tsx
   index.tsx
-features/
-  home/
-    components/
-    screens/
+components/
+  ui/
+    button.tsx
+  posts/
+    posts-list.tsx
+screens/
+  home-screen.tsx
 services/
   api/
   storage/
@@ -104,7 +107,7 @@ The `app/` directory contains the Expo Router entry points. Routing is intention
 
 ### Feature Layer
 
-The `features/home/` directory owns the main screen and its UI components. This keeps screen-specific presentation logic close together and prevents unrelated app concerns from being mixed into the route files.
+The `screens/home/` directory owns the main screen and . This keeps screen-specific presentation logic close together and prevents unrelated app concerns from being mixed into the route files.
 
 ### State Management
 
@@ -143,14 +146,14 @@ This keeps side effects out of the UI layer and makes the code easier to extend 
 
 ### UI And Animation
 
-UI is split into small focused components rather than one large screen file. The animated counter logic is isolated in `features/home/components/animated-counter.tsx`, keeping presentation behavior local and preventing animation concerns from leaking into the store.
+UI is split into small focused components rather than one large screen file. The animated counter logic is isolated in `components/animated-counter.tsx`, keeping presentation behavior local and preventing animation concerns from leaking into the store.
 
 ## Testing
 
 The project includes lightweight automated coverage for the most important runtime behavior:
 
 - store behavior in `__tests__/store/app-store.test.ts`
-- screen rendering in `__tests__/features/home/home-screen.test.tsx`
+- screen rendering in `__tests__/screens/home-screen.test.tsx`
 
 ## Production-Oriented Decisions
 

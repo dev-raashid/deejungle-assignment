@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import AnimatedCounter from "@/features/home/components/animated-counter";
-import Button from "@/features/home/components/button";
-import PostsList from "@/features/home/components/posts-list";
+import AnimatedCounter from "@/components/animated-counter";
+import PostsList from "@/components/posts/posts-list";
+import Button from "@/components/ui/button";
 import { resetAppStore, useAppStore } from "@/store/app-store";
 
 export default function HomeScreen() {

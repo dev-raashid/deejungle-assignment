@@ -1,10 +1,10 @@
-import React from "react";
 import { render, screen } from "@testing-library/react-native";
+import React from "react";
 
-import HomeScreen from "@/features/home/screens/home-screen";
+import HomeScreen from "@/screens/home-screen";
 import { resetAppStore, useAppStore } from "@/store/app-store";
 
-jest.mock("@/features/home/components/animated-counter", () => {
+jest.mock("@/components/animated-counter", () => {
   const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
 
   return function MockAnimatedCounter({ count }: { count: number }) {
