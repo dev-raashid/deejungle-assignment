@@ -1,50 +1,166 @@
-# Welcome to your Expo app 👋
+# Deejungle Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Deejungle is a React Native application built with Expo and Expo Router. The current implementation provides a single production-style screen that fetches posts from a mock API, tracks user interaction through a persistent counter, and presents animated feedback in the UI.
 
-## Get started
+## Overview
 
-1. Install dependencies
+The app currently supports:
 
-   ```bash
-   npm install
-   ```
+- fetching posts from a remote mock API
+- persisting fetched posts locally across app restarts
+- persisting the counter state locally across app restarts
+- animated visual feedback when the counter updates
+- automated coverage for store behavior and screen rendering
 
-2. Start the app
+## Demo Recording
 
-   ```bash
-   npx expo start
-   ```
+A demo recording of the app flow is available here:
 
-In the output, you'll find options to open the app in a
+- [Deejungle Demo Recording](https://drive.google.com/file/d/1sHu6K0N_ZIjhosyvwovLGG2xP7FiiHKv/view?usp=drive_link)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Expo
+- React Native
+- Expo Router
+- TypeScript
+- Zustand
+- AsyncStorage
+- React Native Reanimated
+- Jest
+- React Native Testing Library
 
-## Get a fresh project
+## Getting Started
 
-When you're ready, run:
+### Prerequisites
+
+- Node.js 18+ or 20+
+- Yarn
+- Xcode Simulator, Android Emulator, or Expo Go
+
+### Install Dependencies
 
 ```bash
-npm run reset-project
+yarn install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Start The App
 
-## Learn more
+```bash
+yarn start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### Run On Specific Platforms
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+yarn ios
+yarn android
+yarn web
+```
 
-## Join the community
+## Scripts
 
-Join our community of developers creating universal apps.
+Start the development server:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+yarn start
+```
+
+Run tests:
+
+```bash
+yarn test
+```
+
+Run lint checks:
+
+```bash
+yarn lint
+```
+
+## Project Structure
+
+```text
+app/
+  _layout.tsx
+  index.tsx
+features/
+  home/
+    components/
+    screens/
+services/
+  api/
+  storage/
+store/
+types/
+__tests__/
+```
+
+## Architecture
+
+### App Layer
+
+The `app/` directory contains the Expo Router entry points. Routing is intentionally minimal because the current product surface is a single focused screen. This keeps navigation concerns separate from feature implementation and allows the app to scale cleanly if more screens are added later.
+
+### Feature Layer
+
+The `features/home/` directory owns the main screen and its UI components. This keeps screen-specific presentation logic close together and prevents unrelated app concerns from being mixed into the route files.
+
+### State Management
+
+Global app state is managed with Zustand in `store/app-store.ts`. Zustand was chosen because it provides:
+
+- a simple, production-friendly global state model
+- low boilerplate compared to heavier state libraries
+- straightforward persistence integration
+- clear separation between UI and state transitions
+
+The store currently owns:
+
+- `counter`
+- `posts`
+- `isLoading`
+- `error`
+- `fetchData`
+
+### Persistence
+
+Persistence is handled through Zustand middleware and AsyncStorage. The persisted state is limited to durable business data:
+
+- counter value
+- fetched posts
+
+Transient UI state such as loading and error flags is intentionally not persisted.
+
+### Service Layer
+
+The app separates external concerns into `services/`:
+
+- `services/api/posts.ts` handles network requests and response mapping
+- `services/storage/async-storage.ts` centralizes storage configuration
+
+This keeps side effects out of the UI layer and makes the code easier to extend and test.
+
+### UI And Animation
+
+UI is split into small focused components rather than one large screen file. The animated counter logic is isolated in `features/home/components/animated-counter.tsx`, keeping presentation behavior local and preventing animation concerns from leaking into the store.
+
+## Testing
+
+The project includes lightweight automated coverage for the most important runtime behavior:
+
+- store behavior in `__tests__/store/app-store.test.ts`
+- screen rendering in `__tests__/features/home/home-screen.test.tsx`
+
+## Production-Oriented Decisions
+
+The codebase is intentionally structured to remain maintainable as the app grows:
+
+- small, responsibility-focused components
+- isolated state management
+- centralized persistence
+- separated API access
+- TypeScript-first development
+- automated linting and test coverage
+
+These choices make it easier to scale the app beyond its current scope without needing to rewrite the core structure.
