@@ -3,9 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AnimatedCounter from "@/features/home/components/animated-counter";
-import FetchButton from "@/features/home/components/fetch-button";
+import Button from "@/features/home/components/button";
 import PostsList from "@/features/home/components/posts-list";
-import { useAppStore } from "@/store/app-store";
+import { resetAppStore, useAppStore } from "@/store/app-store";
 
 export default function HomeScreen() {
   const counter = useAppStore((state) => state.counter);
@@ -18,7 +18,8 @@ export default function HomeScreen() {
     <SafeAreaView edges={["top", "left", "right"]} style={styles.safeArea}>
       <View style={styles.container}>
         <AnimatedCounter count={counter} />
-        <FetchButton isLoading={isLoading} onPress={fetchData} />
+        <Button label="Fetch Data" isLoading={isLoading} onPress={fetchData} />
+        <Button label="Reset" isLoading={false} onPress={resetAppStore} style={{ backgroundColor: 'red' }} />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <View style={styles.listContainer}>
           <PostsList posts={posts} />
