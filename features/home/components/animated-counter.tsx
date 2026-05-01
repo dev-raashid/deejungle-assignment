@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, {
-  interpolate,
-  interpolateColor,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 
@@ -12,39 +11,66 @@ type AnimatedCounterProps = {
   count: number;
 };
 
-const MAX_VISUAL_COUNT = 10;
+const COLOR_TRANSITION_DURATION = 450;
+const TILE_PULSE_SCALE = 1.12;
+const TILE_PULSE_DURATION = 180;
+
+type RgbColor = {
+  blue: number;
+  green: number;
+  red: number;
+};
+
+const INITIAL_COUNT_COLOR: RgbColor = {
+  red: 138,
+  green: 75,
+  blue: 8,
+};
+
+function getRandomColor(): RgbColor {
+  return {
+    red: Math.floor(Math.random() * 256),
+    green: Math.floor(Math.random() * 256),
+    blue: Math.floor(Math.random() * 256),
+  };
+}
 
 export default function AnimatedCounter({ count }: AnimatedCounterProps) {
-  const progress = useSharedValue(count);
+  const red = useSharedValue(INITIAL_COUNT_COLOR.red);
+  const green = useSharedValue(INITIAL_COUNT_COLOR.green);
+  const blue = useSharedValue(INITIAL_COUNT_COLOR.blue);
+  const tileScale = useSharedValue(1);
+  const hasMounted = useRef(false);
 
   useEffect(() => {
-    progress.value = withTiming(count, { duration: 350 });
-  }, [count, progress]);
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
 
-  const animatedCardStyle = useAnimatedStyle(() => {
-    const clamped = Math.min(progress.value, MAX_VISUAL_COUNT);
+    const nextColor = getRandomColor();
 
-    return {
-      backgroundColor: interpolateColor(clamped, [0, MAX_VISUAL_COUNT], ["#f4dcc2", "#e7c39f"]),
-      borderRadius: interpolate(clamped, [0, MAX_VISUAL_COUNT], [20, 36]),
-      transform: [{ scale: interpolate(clamped, [0, MAX_VISUAL_COUNT], [1, 1.06]) }],
-    };
-  });
+    red.value = withTiming(nextColor.red, { duration: COLOR_TRANSITION_DURATION });
+    green.value = withTiming(nextColor.green, { duration: COLOR_TRANSITION_DURATION });
+    blue.value = withTiming(nextColor.blue, { duration: COLOR_TRANSITION_DURATION });
+    tileScale.value = withSequence(
+      withTiming(TILE_PULSE_SCALE, { duration: TILE_PULSE_DURATION }),
+      withTiming(1, { duration: TILE_PULSE_DURATION })
+    );
+  }, [blue, count, green, red, tileScale]);
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    const clamped = Math.min(progress.value, MAX_VISUAL_COUNT);
-
     return {
-      color: interpolateColor(clamped, [0, MAX_VISUAL_COUNT], ["#8a4b08", "#6f3f12"]),
-      fontSize: interpolate(clamped, [0, MAX_VISUAL_COUNT], [40, 56]),
+      color: `rgb(${Math.round(red.value)}, ${Math.round(green.value)}, ${Math.round(blue.value)})`,
+      transform: [{ scale: tileScale.value }],
     };
   });
 
   return (
-    <Animated.View style={[styles.card, animatedCardStyle]}>
+    <View style={styles.card}>
       <Text style={styles.label}>Button Press Count</Text>
-      <Animated.Text style={[styles.count, animatedTextStyle]}>{count}</Animated.Text>
-    </Animated.View>
+        <Animated.Text style={[styles.count, animatedTextStyle]}>{count}</Animated.Text>
+    </View>
   );
 }
 
@@ -54,7 +80,9 @@ const styles = StyleSheet.create({
     borderColor: "#d1a77d",
     borderWidth: 1,
     paddingHorizontal: 24,
-    paddingVertical: 28,
+    paddingVertical: 24,
+    backgroundColor: "#f4dcc2",
+    borderRadius: 16,
   },
   label: {
     color: "#7a4b24",
@@ -65,6 +93,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   count: {
+    fontSize: 42,
     fontWeight: "800",
   },
 });
